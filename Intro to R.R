@@ -75,6 +75,7 @@ dim(gapminder) #gives you the dimensions of the data row X column
 
 gapminder$lifeExp
 
+
 life <- gapminder$lifeExp #assign to life so I dont have to type this every time
 
 head(life)
@@ -86,8 +87,8 @@ str(life) # they are numbers so whats up?
 is.data.frame(life) # ask if life is data frame
 is.vector(life) # ask if its a vector
 
-#R always start indexing with No. 1
-#getting the values 
+# R always start indexing with No. 1
+# getting the values 
 life [1]
 life [2]
 life [3]
@@ -104,19 +105,22 @@ life[c(1,2)]
 life[c(1, 2, 3, 100, 700)] # Obteniendo valores específicos
 
 #back to gapminder the  data.frame
+
 gapminder[1, 1]
 
 names(gapminder)
 
 gapminder[1, 'country'] #this is a string.
 
-#lets get the first value for country and year
+# lets get the first value for country and year
 gapminder[1, c('country', 'year')]
 
 gapminder[1, ]
 gapminder[1:10, ]
 gapminder[, c('country', 'year')]
-################################################################################
+head(gapminder[, c('country', 'year')])
+
+####Selecting data from our vector in differ
 
 #Select row 100 in gapminder
 gapminder[100, ]
@@ -140,8 +144,8 @@ ggplot
 plot(gapminder$pop ~ gapminder$year)
 
 #ggplot much more wow than plot
-#ggplot from comes from grammar of graphics.... -_-
-#The data need to be in a data frame FORMAT....
+#ggplot comes from grammar of graphics.... -_-
+#The data needs to be in a data frame FORMAT....
 
 #aesthetic(aes): tells ggplot where to put the stuff(color, lines, type,)
 #geom: actual visualization of the data
@@ -192,41 +196,45 @@ p + geom_point()
 library(gapminder)
 
 library(ggplot2)
-ggplot(data = gapminder, aes(x+ year, y = lifeExp)) + 
-  geom_point()
 
-p <- ggplot(data = gapminder, aes(x+ year, y = lifeExp))
-p + geom_point()
-
-p + geom_point(aes(colour = continent))
-
-ggplot(data = gapminder, aes(x = year, y = lifeExp, by
-= country, colour = continent)) +
+ggplot(data = gapminder, aes(x = year, y = lifeExp, 
+                             by = country, colour = continent)) +
   geom_point() +
   geom_line()
 
-ggplot(data = gapminder, aes(x = year, y = lifeExp, by
-= country)) +
+ggplot(data = gapminder, aes(x = year, y = lifeExp, 
+                             by = country)) +
   geom_point() +
-  geom_line(aes(colour = continent))
+  geom_line(aes(colour = continent)) #esta es la parte que le da color a las
+# líneas
 
 
 #poner los puntos negros al frente de todo
+
 ggplot(data = gapminder, aes(x = year, y = lifeExp, by
                              = country)) +
    geom_line(aes(colour = continent)) +
   geom_point()
 
 # El orden en que se ponen las capas (layers) afecta el orden de lo que vemos 
-# en el plano. COmo queriamos ver los puntos encima de todo, ponemos el comando
+# en el plano. Como queriamos ver los puntos encima de todo, ponemos el comando
 # de puntos "geom_point" al final para verlos encima de todo.
 # Recuerde, va literalmente por capas.
 
 
 # We're graphing here a factor which is country and a number which is gapPercap
+
+ggplot(data = gapminder, aes(x = year, y = lifeExp, by 
+                             = country, colour = (gdpPercap))) +
+  geom_point()
+
+
+# Jillian adicionó la función log para homogenizar los datos
+
 ggplot(data = gapminder, aes(x = year, y = lifeExp, by 
                              = country, colour = log(gdpPercap))) +
   geom_point()
+
 
 ggplot(data = gapminder, aes(x = year, y = lifeExp, by 
                              = country, colour = continent)) +
@@ -254,7 +262,7 @@ ggplot(data = gapminder, aes(x = year, y = lifeExp, by = country,
   geom_point() + 
   scale_colour_gradientn(colours = topo.colors(20))
 
-# El ejercicio se resuelve poniendo el comando de color AL FINAL....
+# El ejercicio se resuelve poniendo el comando de color después de geom_point...
 # Escribir colour en ggplot2 ayuda a evitar el problema que se encuentra
 # cuando solo se escribe color o colour. Escribir siempre COLOUR a excepción
 # del final, donde dice topo...
@@ -277,7 +285,7 @@ ggplot(data = gapminder, aes(x = year, y = lifeExp)) +
 # para poner el año
 ggplot(data = gapminder, aes(x = year, y = lifeExp)) + 
   geom_point() + 
-  geom_text(aes(label = year))
+  geom_text(aes(label = year)) +
 
 #
 ggplot(data = gapminder, aes(x = year, y = lifeExp)) + 
@@ -305,8 +313,12 @@ library(ggplot2)
 
 str(gapminder)
 
+
+####Filtering data#### 
+
+# Lets select the rows that had canada...
 filter (gapminder, country == 'Canada')
-# we selected the rows that had canada...
+filter (gapminder, continent == 'Europe')
 
 gapminder[, 'country']
 
@@ -323,12 +335,18 @@ args (head)
 
 # args shows you the values of ......
 
-# % > % this is 'the pipe'
+
 # take this thing and put it into somewhere else
 
+#         % > % this is 'the pipe'
+
+# Lets group all the continents....
+
 group_by(gapminder, continent)
-# we group all the continents....
-# we want to pass this organize this data frame into "something" ... 
+
+# Now we want to pass this organize data frame into "something" ... 
+# Here is where we use that stupid symbol that could not find in google 
+# % > %
 
 group_by(gapminder, continent) %>%
   summarise(mean_life = mean(lifeExp))
@@ -342,63 +360,67 @@ group_by(gapminder, continent) %>%
 # read it
 
 
-# Mutate will do whatever you want in every single row of your data. It adds
-# a new column which is the one we wanted to calculate
-
+####Mutate####
+# will do whatever you want in every single row of your data. It adds a new 
+# column which is the one we wanted to calculate
 
 head(mutate(gapminder, gdp = gdpPercap * pop))
 
-
-
+####Transmutate####
 # Show just the new data by itself without the rest...
+
 head(transmute(gapminder, gdp = gdpPercap * pop))
 
 
-
-# arrange
-
+####arrange####
+# Usualmente arregla los datos de menor a mayor
 head(arrange(gapminder, lifeExp))
 
-# to make the gdp in an asc/des way
+# Para hacer que los arregle de mayor a menor
 
 head(arrange(gapminder, desc(lifeExp)))
 
-
-
+####Pregunta para Jillian####
 group_by(gapminder, continent) %>%
   mean(., lifeExp)
 
 # Class exercise
+
+library(gapminder)
+library(ggplot2)
+library(dplyr)
+
 
 # For each continent, what country had the smallest population in 1952, 1972 
 # and 2002?
 
 str(gapminder)
 
-gapminder[, 'year']
-
-select(gapminder, year[])
-
-# Doesn't work because there is no column by the name of Canada
-select(gapminder, Canada)
-names(gapminder)
-
-head(select(gapminder, starts_with('C')))
-# select is ONLY for columns 
+gapminder %>% 
+  filter(year %in% c(1952, 1972, 2002)) %>%
+  group_by(continent, year) %>% 
+  slice(which.min(pop))
 
 
+I# Create a graph of the total population of each continent over time
 
+gapminder %>%
+  group_by(continent) %>%
+  summarise(total_pop = sum(pop)) %>%
+  ggplot(data = ., aes(x = continent, y = total_pop)) + 
+  geom_bar(stat = "identity")
 
-
-
-
-
-
-
-
-
-# Create a graph of the total population of each continent over time
 
 # Calculate the mean gdpPercap for each country
 
+gapminder %>% 
+  group_by(country) %>%
+  summarise(mean_gdpPercap = mean(gdpPercap))
+
+
 # Calculate the mena gdp for each coutnry
+
+gapminder %>% 
+  mutate(gdp = gdpPercap * pop) %>%
+  group_by(country) %>%
+  summarise(mean_gdp = mean(gdp))
