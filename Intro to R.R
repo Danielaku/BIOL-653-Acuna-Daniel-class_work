@@ -402,7 +402,7 @@ gapminder %>%
   slice(which.min(pop))
 
 
-I# Create a graph of the total population of each continent over time
+# Create a graph of the total population of each continent over time
 
 gapminder %>%
   group_by(continent) %>%
@@ -418,9 +418,100 @@ gapminder %>%
   summarise(mean_gdpPercap = mean(gdpPercap))
 
 
-# Calculate the mena gdp for each coutnry
+# Calculate the mean gdp for each coutnry
 
 gapminder %>% 
   mutate(gdp = gdpPercap * pop) %>%
   group_by(country) %>%
   summarise(mean_gdp = mean(gdp))
+
+####dplyr review####
+
+library(gapminder)
+library(ggplot2)
+library(dplyr)
+
+# Calculate the mean gdpPercap for each country
+
+gapminder %>% 
+  group_by(country) %>%
+  summarise(mean_gdpPercap = mean(gdpPercap))
+
+# sumarise take data form multiple roads and collapse it into one
+
+# Calculate the mena gdp for each coutnry
+
+# Make a list of what we need
+# by country
+# get gdp
+# mean gdp
+gapminder %>% 
+  mutate(gdp = gdpPercap * pop) %>%
+  group_by(country) %>%
+  summarise(mean_gdp = mean(gdp))
+
+
+# Create a graph of the total population of each continent over time
+
+total_pop_df <-
+gapminder %>%
+  group_by(continent, year) %>%
+  summarise(total_pop = sum(pop))
+  
+ggplot(data = total_pop_df, aes(x = year, y = total_pop, colour = continent)) + 
+  geom_point()
+
+# For each continent, what country had the smallest population in 1952, 1972 
+# and 2002?
+# IN %in% helps you to compare items
+
+
+# print the info from gapminde as a data frame
+# To start with, lets list the steps to follow 
+# by continent
+# subset ->in 1952, 1972, 2002
+# minimum population
+
+
+gapminder <- tbl_df(gapminder)
+
+gapminder%>%
+  filter(year %in% c(1952, 1972, 2002))%>%
+  group_by(continent, year)%>%
+  slice(which.min(pop))%>%
+  select(country, year, pop)
+
+
+# this is how things used to be done...
+filter by year 2002
+group by continent
+mean population
+
+mean(group_by((filter(gapminder, year == 2002)),
+              continent)$pop)
+
+  
+# with gapminder
+
+gapminder %>%
+  filter(year == 2002) %>%
+# group_by(continent)
+    summarise(mean(pop))
+
+
+
+####df####
+gap_df <- as_data_frame(gapminder)
+str(gap_df)
+gap_tbl <- tbl_df(gapminder)
+gap_tbl
+str(gap_tbl)
+
+# Extra questions
+# 1) How many contries are there on each continent?
+
+gapminder
+
+# 2) What countries have the best and worst life expectancies in each continent
+
+
