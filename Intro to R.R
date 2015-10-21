@@ -138,31 +138,31 @@ life[c(1:2, 10, 1699:1704)] == life[c(1:2, 10, (length(life)-5):length(life))]
 
 ################################################################################
 
-ggplot
+#### ggplot ####
 
-#using the plot function....
+# using the plot function....
 plot(gapminder$pop ~ gapminder$year)
 
-#ggplot much more wow than plot
-#ggplot comes from grammar of graphics.... -_-
-#The data needs to be in a data frame FORMAT....
+# ggplot much more wow than plot
+# ggplot comes from grammar of graphics.... -_-
+# The data needs to be in a data frame FORMAT....
 
-#aesthetic(aes): tells ggplot where to put the stuff(color, lines, type,)
-#geom: actual visualization of the data
-#scale: map values to aes, colour, size, shape(shows up legends and axes)
-#stat: statistical transformation, summaries of data
-#facet: diiferent subsets of the data
+# aesthetics (aes): tells ggplot where to put the stuff(color, lines, type,)
+# geom: actual visualization of the data
+# scale: map values to aes, colour, size, shape(shows up legends and axes)
+# stat: statistical transformation, summaries of data
+# facet: different subsets of the data
 
-#doing a simple scattered plot
+# doing a simple scattered plot
 
 install.packages('ggplot2')
 library('ggplot2')
 
-#basic scatterplot
+# basic scatterplot
 ggplot(data = gapminder, aes(x = year, y = lifeExp)) + 
   geom_point()
 
-#adding some colour
+# adding some colour
 ggplot(data = gapminder, aes(x = year, y = lifeExp, 
                              colour = continent)) + 
   geom_point()
@@ -293,7 +293,7 @@ ggplot(data = gapminder, aes(x = year, y = lifeExp)) +
   geom_text(aes(label = country))
 
 # subset() ayuda por ejemplo a solo graficar algo en particular
-subste(data= subset(blah blah....), ...)
+# subset (data= subset(blah blah....), ...)
 
 #### 24/09/15 ####
 
@@ -345,7 +345,7 @@ args (head)
 group_by(gapminder, continent)
 
 # Now we want to pass this organize data frame into "something" ... 
-# Here is where we use that stupid symbol that could not find in google 
+# Here is where we use that stupid symbol that I could not find in google 
 # % > %
 
 group_by(gapminder, continent) %>%
@@ -439,7 +439,7 @@ gapminder %>%
 
 # sumarise take data form multiple roads and collapse it into one
 
-# Calculate the mena gdp for each coutnry
+# Calculate the mean gdp for each coutnry
 
 # Make a list of what we need
 # by country
@@ -515,3 +515,261 @@ gapminder
 # 2) What countries have the best and worst life expectancies in each continent
 
 
+####01/10/15####
+
+# Warm up
+
+# 1) What do I mean when I say indexing?
+
+# When calling up a specific object in some position
+
+
+# 2) Get the 5th and last element of the vector
+
+meow <- c(1, 2, 3, 4, 10, 11, 12)
+
+meow [c(5, 7)]
+
+# when the vector is larger and not so easy to see like this one:
+
+meow [c(5, length(meow))]
+
+# 3) What does str() do
+# Gives you info from the data set
+
+#### Function review ####
+
+function (arg1, arg2, arg3,...)
+
+mean(x, trim = 0, na.rm = FALSE)
+
+#### Objects in R - Vectors ####
+
+#Atomic vectors:
+  logical
+  integer
+  Double(numeric)
+  character
+
+# Creating a double vector
+  
+dbl_vec <- c(1.2, 1.3, 1.4, 2.5)
+str(dbl_vec)
+typeof(dbl_vec)
+
+# Creating an integer vector (numeric, but discrete)
+int_vec <- c(1, 2, 3, 4) # this just produces a double vector 
+typeof(int_vec)
+
+int_vec <- c(1L, 2L, 3L, 4L)
+typeof(int_vec)
+
+# now it's an integer
+
+# logical vector
+log_vec <- c(TRUE, FALSE, TRUE)
+typeof(log_vec)
+log_vec
+
+# Character Vector
+
+chr_vec <-c("a", "b", "c")
+chr_vec
+typeof(chr_vec)
+
+# Coercion
+
+# 12
+# 1
+# .
+# 9
+z <- read.csv(text = "value\n12\n1\n.\n9")
+str(z)
+typeof(z)
+typeof(z[[1]])
+as.double(z)
+as.double(z[[1]])
+as.character(z)
+as.character(z[[1]])
+as.double(as.character(z[[1]]))
+?read.csv
+
+# setting stringAsFactors = FALSE means that no character columns will be put 
+# into R as factors
+
+z <- read.csv(text = "value\n12\n1\n.\n9",
+              stringsAsFactors = FALSE)
+typeof(z[[1]])
+
+as.double(z[[1]])
+
+#### Objects in R 2! ####
+
+# 2 dimensional structures
+# matrix
+
+a <- matrix(1:6, ncol = 3, nrow = 2)
+a
+str(a)
+a[, 3]
+length (a)
+dim (a)
+nrow(a)
+ncol (a)
+
+x <- c('a', 'b', 'c', 'd', 'e', 'f')
+
+a <- matrix(x, ncol =3, nrow = 2)
+a
+
+x <- c(x, 1, 2, 3)
+x
+
+# data.frames
+library(gapminder)
+str(gapminder)
+library(dplyr)
+
+#### 13/10/15 ####
+# In the gapminder data, every continent is sampled every 5 years
+# Group bby coutries
+
+# 1. How many countries are there on each continent?, 
+# 2. What countries have the best and worst life expectancies in each continent?
+# 3. Which country experienced  the sharpest 5 year drop in life expectancy 
+# (sharpest drop between data points)?
+
+# diff es la resta
+# arrange 
+# 3
+gapminder %>%
+  group_by (country) %>%
+  arrange (year) %>% #sort by year...
+  mutate(diff = lifeExp - lead(lifeExp)) %>% # lead function ti get previous row value
+  group_by(continent) %>% 
+  slice(which.min(diff)) # which.min helps you find minimum value
+
+#### for loops ####
+# Iterations...
+# 
+# nchar gives you de length 
+
+animals <- c("cat", "dog", "ponies", "koi", "chickens", "moose")
+for (animal in animals) {
+  len <- nchar(animal)
+  print(len)
+}
+
+# What is happening in the for loop is :
+# len <- nchar(animal) animals [1]
+# print("cat")
+# len <- nchar(animal) animals [2]
+# print("dog")
+# len <- nchar(animal) animals [3]
+# print("ponies")
+# len <- nchar(animal) animals [4]
+# print("koi")
+# ......
+
+# instead of going direclty through animals, we're gonna do this in numbers
+
+
+# 
+for (i in 1:6){
+  len <- nchar(animals[i])
+  print(len)
+}
+
+# calculate the square of the values from 1-10
+
+# Not necessary to create a vector
+# numbers <- c("1","2", "3", "4", "5", "6", "7 ", "8", "9", "10")
+
+for (i in 1:10) { 
+  sq <- i^2
+  print(sq)
+} 
+
+# Creating an empty vector
+sq <- vector(length = 10)
+for (i in 1:10){
+  sq [i] <- i^2
+}
+# it's like doing sq [1] = 1^2
+# sq [2] = 2^2
+# sq [3] = 3^2
+
+# Calculate the cumulative sum of the values 1-10
+sa <- vector (length = 1)
+for (i in 1:10){
+  sa [i] <- i+i
+}
+# no sirvió así. Ahora Jillian nos muestra cómo...
+
+# 1 + 2 + 3 + 4 +..... 10
+# 1st loop
+# 1 + 2
+# i + (i+1) -> c_sum <- c(3)
+
+# 2nd loop
+# 3 + 3
+# i =2 
+# c_sum [1] = 3
+# c_sum [1] + i+1
+
+c_sum <- 0
+for (i in 1:10){
+  browser() # allows you to check steps in the loop. N allows you to go next line
+  c_sum <- c_sum + i
+  print(c_sum)
+}
+# Use Q to exit the browser
+# c_sum <- c_sum + 1
+
+# Nesting
+library('gapminder')
+print(gapminder)
+
+x <- 1:10
+y <- "cat"
+mixed_list <- list(x, y, head(gapminder)) # Whe jillian says nested, it means 
+# something like this,... you have lists in a list.
+print(mixed_list)
+
+#### 20/10/15 ####
+
+# for loops
+
+# 1) create matrix
+mat <- matrix(1:100, nrow = 10, ncol = 10)
+
+# 2) Print each value of the matrix
+for (i in 1:100){
+  print(i)}
+# Multiply each value in this matrix by 7 and store it in a 10 x 10 matrix
+
+
+
+# 3 a) Print these values as part of a string that looks something like 'n = 16'
+
+# sed.seed cuando se crean simulaciones para que los números salgan todos
+# iguales
+
+set.seed(1)
+x <- round(runif(min = 10, max = 100, n = 15))
+
+# a
+for (i in x){
+  print (paste (i))
+}
+
+#### Paste #### 
+# creates a vector into a string
+# created a vector tha has an n = 15 and values that range between 10 and 100
+
+# Now, modify this loop to store these strings in a new vector called counts.
+
+counts <- vector (length = length(x)
+                  for (i in x){
+                    counts[i] <- (paste (i))
+# counts [34]
