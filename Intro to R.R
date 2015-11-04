@@ -773,3 +773,221 @@ counts <- vector (length = length(x)
                   for (i in x){
                     counts[i] <- (paste (i))
 # counts [34]
+
+
+#### FUNctions ####
+                    
+# What is a function
+# function(arg1, arg2, arg3)
+# 3 parts
+# 1) Name of function
+# 2) Arguments (inputs)
+# 3) body (code)
+
+myFun <- function(args){
+  code
+  return(something) #sometimes
+}
+
+# Take a vector x, and get the difference between the max and min values
+
+x <- 2:200
+max(x) - min(x)
+
+# Make this into a function!
+  
+max_minus_min <- function(x){
+    dif <- max(x) - min(x)
+    return(dif)
+  }
+
+max_minus_min(2:200) 
+
+# because the vector x is 2:200, you can also just use x)
+# Should return 198
+max_minus_min(x) 
+
+
+max_minus_min(gapminder$lifeExp) 
+# Yes, lifeExp is a vector
+max_minus_min(gapminder$country)
+# No, country is a factor (cant do max/min)
+max_minus_min(gapminder)
+# Ha dont be silly thats crazy
+
+max_minus_min(gapminder[,c('lifeExp', 'gdpPercap', 'pop')])
+
+
+# always code defensively!
+max_minus_min <- function(x){
+    stopifnot(is.numeric(x))
+      dif <- max(x) - min(x)
+    return(dif)
+  }
+
+# EXERCISE: Write a function that squares a value
+
+square <- function(x) {
+  stopifnot(is.numeric(x))
+  sq <- x^2
+  return(sq)
+}
+
+square(2)
+
+# Otra forma de hacerlo sería
+
+sqnum <- function(x){x^2
+}
+sqnum(3)
+
+# Es crucial en el caso de abajo, recordar que le tengo que decir al programa 
+# que me devuelva (return) el resultado con la función que se encarga de elevar
+# todo al cuadrado
+quare <- function(x){
+  sq <- x^2
+  return(sq)
+  }
+
+quare(2)
+
+
+
+
+# EXERCISE: Write a funtion that will take any number and raise it to any power
+
+
+power <- function (x,y){
+  pw <- x^y
+  return(pw)
+}
+
+power(2,4)
+
+
+
+#### 29/10/15 ####
+
+# Break large problmes into small ones. 
+# http://r.jillian.io/pages/discrete_population_exercise.html
+# Nt=Nt−1+r∗Nt−1∗(1−Nt−1/K)
+
+N_1 = 1 
+k = 1000
+r = 1
+
+# N_2 = N_1 + r*N_1 (1 - N_1/k)
+# N_3 = N_2 + r*N_2 (1 - N_2/k)
+# N_4 = N_3 + r*N_3 (1 - N_3/k)
+
+
+dgrowth <- function(k, r, ninit, ngen = 100){
+  N <- vector(length = ngen)
+  N[1] <- ninit
+  for (gen in 2:ngen){
+    N[gen] = N[gen-1] + r * N[gen-1]*(1-N[gen-1]/k)
+  }
+  return(N)
+}
+
+dgrowth(ninit = 1, k = 1000, r = 1, ngen =100)
+
+
+# Another way to do it
+
+N_1 = 1
+r = 1
+k = 1000
+ngen = 100
+
+# Let's start with the for loop first
+
+N <- rep(NA, 100)
+N[1]
+#                          N = c(_, _, _, _, _,)
+#                                [1][2] 
+# for (i in 2:100){
+# N [2] = N[1] + r*N[1] (1 - N[1]/k)
+# N[i] = N[i-1] + r * N[i-1]*(1-N[i-1]/k)
+}
+
+
+# en la función necesito darle los valores a r, k, ngen, nint
+# dgrowth <- function(r, k, ngen, ninit){
+#                    (r = 1, k = 1000, ngen = 100, ninit =1)
+# N <- rep(x = NA, times = ngen)
+# N[1] <- init
+# for (i in 2:ngen){
+# N[i] = N[i-1] + r * N[i-1]*(1-N[i-1]/k)
+# }
+# return(N)
+}
+
+
+
+# 3a
+# Make a quick plot of how population increases with time.
+
+# First, let’s make a data frame where we bind one column of time values 
+# with our vector/column of population size at time step t (calcuated using 
+# our handy function). This time let’s look at 100 time steps.
+
+ngen = 100
+pop_100 <- dgrowth(ninit = 1, k = 1000, r = 1, ngen =100)
+time_100 <- 1:100
+pop_df <- data.frame(time_100, pop_100)
+ggplot(data = pop_df, aes(x = time_100, y = pop_100)) +
+  geom_line()
+
+
+# rbind. Check what it does. It binds things.
+
+ninit = 1
+ngen = 100
+r = seq(from = 0.7, to = 3, by = 0.1)
+k =100
+
+
+dgrowth(ninit, ngen, r, k)
+
+
+r_vals = seq(from = 0.7, to = 3, by = 0.1)
+
+pops <- data.frame(r= 0.6, t = 1:ngen, n = dgrowth(ninit = 1, r = 0.6, 
+                                                   ngen = 100, k = 1000))
+
+print(pops)
+
+# Now, for the for loop
+# r is going to chenge because we told it to change
+# popr keeps track of the value of r each time 
+
+for(r in r_vals){
+N <- dgrowth(ninit = ninit, k = k, ngen = ngen, r = r)
+popr <- data.frame(r = r, t = 1:ngen, N = N)
+pops <- rbind(pops, popr)
+}
+
+
+ggplot(data = pops, aes(x = t, y = N)) +
+         geom_line() +
+         facet_wrap(~r)
+
+
+#### 03/11/15 ####
+
+# From "some code for today"
+
+library(tidyr)
+library(dplyr)
+library(gapminder)  
+gap <- 
+  filter(gapminder, grepl("^N", country)) %>% 
+  filter(year %in% c(1952, 1977, 2007)) %>% 
+  slice(1:9) %>% 
+  select(-continent, -gdpPercap, -pop) %>% 
+  mutate(lifeExp = round(lifeExp))
+
+life_exps <- spread(gap, key = year, value = lifeExp)
+
+life_exps
